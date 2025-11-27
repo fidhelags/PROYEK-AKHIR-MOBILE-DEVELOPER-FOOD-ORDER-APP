@@ -18,3 +18,49 @@
 // - Key untuk user: 'user_data'
 //
 // Lihat INSTRUKSI.md di folder services/ untuk panduan lengkap.
+
+import 'package:hive_flutter/hive_flutter.dart';
+import '../models/user.dart'; 
+class StorageService {
+  static const String _authBoxName = 'auth_box';
+  static const String _tokenKey = 'access_token';
+  static const String _userKey = 'user_data';
+
+  static Box? _box;
+
+  static Future<void> init() async {
+    await Hive.initFlutter();
+    _box = await Hive.openBox(_authBoxName);
+  }
+
+  static Future<void> saveToken(String token) async {
+    await _box?.put(_tokenKey, token);
+  }
+
+  static String? getToken() {
+    return _box?.get(_tokenKey);
+  }
+
+  static Future<void> saveUser(User user) async {
+    await _box?.put(_userKey, user.toJson());
+  }
+
+  static User? getUser() {
+    final userData = _box?.get(_userKey);
+    
+    if (userData != null && userData is Map) {
+      return User.fromJson(Map<String, dynamic>.from(userData));
+    }
+    return null;
+  }
+
+  static Future<void> clearAuth() async {
+    await _box?.delete(_tokenKey);
+    await _box?.delete(_userKey);
+  }
+
+  static bool isAuthenticated() {
+    final token = getToken();
+    return token != null && token.isNotEmpty;
+  }
+}

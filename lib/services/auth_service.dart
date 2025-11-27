@@ -20,3 +20,73 @@
 // - Handle error dengan try-catch dan return AuthResponse dengan success: false
 //
 // Lihat INSTRUKSI.md di folder services/ untuk panduan lengkap.
+
+import 'dart:async';
+import '../models/auth_response.dart';
+import 'api_service.dart'; 
+class AuthService {
+  
+  static Future<AuthResponse> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await ApiService.post(
+        '/auth/register',
+        {
+          'name': name,
+          'email': email,
+          'password': password,
+        },
+        includeToken: false, 
+      );
+      
+      return AuthResponse.fromJson(response);
+    } catch (e) {
+      String errorMessage = e.toString().replaceAll('Exception: ', '');
+      return AuthResponse(
+        success: false,
+        message: errorMessage,
+      );
+    }
+  }
+
+  static Future<AuthResponse> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await ApiService.post(
+        '/auth/login',
+        {
+          'email': email,
+          'password': password,
+        },
+        includeToken: false,
+      );
+      
+      return AuthResponse.fromJson(response);
+    } catch (e) {
+      String errorMessage = e.toString().replaceAll('Exception: ', '');
+      return AuthResponse(
+        success: false,
+        message: errorMessage,
+      );
+    }
+  }
+
+  static Future<AuthResponse> getCurrentUser() async {
+    try {
+      final response = await ApiService.get('/auth/me'); 
+      
+      return AuthResponse.fromJson(response);
+    } catch (e) {
+      String errorMessage = e.toString().replaceAll('Exception: ', '');
+      return AuthResponse(
+        success: false,
+        message: errorMessage,
+      );
+    }
+  }
+}

@@ -13,3 +13,43 @@
 // - Category copyWith({bool? isSelected}): Method untuk membuat copy dengan nilai baru
 //
 // Lihat INSTRUKSI.md di folder models/ untuk panduan lengkap.
+
+class Category {
+  final String id;
+  final String name;
+  final bool isSelected; 
+
+  Category({
+    required this.id,
+    required this.name,
+    this.isSelected = false,
+  });
+
+  factory Category.fromJson(Map<String, dynamic> json) {
+    return Category(
+      id: json['id'] ?? '',
+      name: json['name'] ?? 'Unknown Category',
+      isSelected: false, 
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'isSelected': isSelected,
+    };
+  }
+
+  Category copyWith({
+    String? id,
+    String? name,
+    bool? isSelected,
+  }) {
+    return Category(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      isSelected: isSelected ?? this.isSelected,
+    );
+  }
+}
